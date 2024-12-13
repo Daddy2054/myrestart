@@ -43,6 +43,7 @@ struct HomeView: View {
             
             Button(action: {
                 withAnimation {
+                    playSound(sound: "success", type: "m4a")
                     isOnboardingViewActive = true
                 }
             }) {

@@ -17,6 +17,9 @@ struct OnboardingView: View {
     @State private var imageOffset: CGSize = .zero
     @State private var indicatorOpacity: Double = 1.0
     @State private var textTitle: String = "Share."
+    
+    let hapticFeedback = UINotificationFeedbackGenerator()
+    
     //    MARK: - BODY
     var body: some View {
         ZStack {
@@ -133,14 +136,16 @@ how much love we put into giving.
                         .gesture(DragGesture().onEnded{ _ in
                             withAnimation(Animation.easeOut(duration: 0.4)){
                                 if buttonOffset > buttonWidth / 2 {
+                                    hapticFeedback.notificationOccurred(.success)
+                                    playSound(sound: "chimeup", type: "mp3")
                                     buttonOffset = buttonWidth - 80
                                     isOnboardingViewActive = false
                                 } else {
+                                    hapticFeedback.notificationOccurred(.warning)
                                     buttonOffset = 0
                                 }
                             }
-                            
-                        }
+                                                    }
                             .onChanged{gesture in
                                 if gesture.translation
                                     .width > 0 &&
@@ -150,8 +155,7 @@ how much love we put into giving.
                                     buttonOffset = gesture.translation.width
                                 }
                             }
-                                 
-                        ) //: GESTURE
+                                                         ) //: GESTURE
                         Spacer()
                     } //: HSTACK
                 } //: FOOTER
@@ -160,12 +164,12 @@ how much love we put into giving.
                 .opacity(isAnimating ? 1: 0)
                 .offset(y: isAnimating ? 0 : 40)
                 .animation(.easeInOut(duration: 1), value: isAnimating)
-                
-            }//: VSTACK
+                            }//: VSTACK
         }//: ZSTACK
         .onAppear(perform: {
             isAnimating = true
         })
+        .preferredColorScheme(.dark)
     }
 }
 
